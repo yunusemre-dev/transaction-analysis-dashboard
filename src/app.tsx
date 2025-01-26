@@ -34,7 +34,10 @@ export default function App() {
       );
 
       if (!response.ok) {
-        throw new Error(`Upload failed: ${response.statusText}`);
+        const errorData = await response.json().catch(() => ({
+          message: "Failed to upload file",
+        }));
+        throw new Error(errorData.message);
       }
 
       const data = await response.json();
@@ -44,11 +47,11 @@ export default function App() {
         loading: false,
         error: null,
       }));
-    } catch (err) {
+    } catch (e) {
       setCsvAnalysis((prev) => ({
         ...prev,
         loading: false,
-        error: err instanceof Error ? err.message : "Failed to upload file",
+        error: e instanceof Error ? e.message : "Failed to upload file",
       }));
     } finally {
       setCsvAnalysis((prev) => ({ ...prev, loading: false }));
