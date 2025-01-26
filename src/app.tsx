@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { toast } from "react-hot-toast";
 import { components } from "@/types/openapi";
 import Header from "./components/header";
 import AnalysisReport from "./components/analysis-report";
@@ -46,7 +45,11 @@ export default function App() {
         error: null,
       }));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to upload file");
+      setCsvAnalysis((prev) => ({
+        ...prev,
+        loading: false,
+        error: err instanceof Error ? err.message : "Failed to upload file",
+      }));
     } finally {
       setCsvAnalysis((prev) => ({ ...prev, loading: false }));
     }
@@ -54,7 +57,7 @@ export default function App() {
 
   const handleFileChange = (newFile: File | null) => {
     setCsvAnalysis((prev) => ({ ...prev, response: null, error: null }));
-    
+
     if (newFile) {
       handleUpload(newFile);
     }
